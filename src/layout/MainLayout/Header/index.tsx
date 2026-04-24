@@ -1,5 +1,5 @@
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme, useColorScheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -9,7 +9,7 @@ import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
 import NotificationSection from './NotificationSection';
-import ThemeSection from './ThemeSection';
+import RemixIcon from 'ui-component/extended/RemixIcon';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
@@ -17,6 +17,7 @@ import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 
 export default function Header() {
   const theme = useTheme();
+  const { mode } = useColorScheme();
   const downMD = useMediaQuery(theme.breakpoints.down('md'));
 
   const { menuMaster } = useGetMenuMaster();
@@ -25,10 +26,7 @@ export default function Header() {
   return (
     <>
       {/* logo & toggler button */}
-      <Box sx={{ width: downMD ? 'auto' : 228, display: 'flex' }}>
-        <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
-          <LogoSection />
-        </Box>
+      <Box sx={{ width: downMD ? 'auto' : 228, display: 'flex', alignItems: 'center' }}>
         <Avatar
           variant="rounded"
           sx={{
@@ -36,30 +34,30 @@ export default function Header() {
             ...theme.typography.mediumAvatar,
             overflow: 'hidden',
             transition: 'all .2s ease-in-out',
-            color: theme.vars.palette.secondary.dark,
-            background: theme.vars.palette.secondary.light,
+            color: mode === 'dark' ? '#ffffff' : '#333333',
+            background: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+            mr: 4,
             '&:hover': {
-              color: theme.vars.palette.secondary.light,
-              background: theme.vars.palette.secondary.dark
+              color: '#ffffff',
+              background: theme.vars.palette.primary.main
             }
           }}
           onClick={() => handlerDrawerOpen(!drawerOpen)}
         >
-          <Box className="ri-menu-line" sx={{ fontSize: '20px' }} />
+          <RemixIcon className="ri-menu-line" fontSize="20px" />
         </Avatar>
+        <Box component="span" sx={{ display: { xs: 'none', md: 'block' }, flexGrow: 1 }}>
+          <LogoSection />
+        </Box>
       </Box>
 
-      {/* header search - centered */}
-      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-        <SearchSection />
-      </Box>
+      {/* header search */}
+      <SearchSection />
+      <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ flexGrow: 1 }} />
 
       {/* notification */}
       <NotificationSection />
-
-      {/* theme toggle */}
-      <ThemeSection />
 
       {/* profile */}
       <ProfileSection />

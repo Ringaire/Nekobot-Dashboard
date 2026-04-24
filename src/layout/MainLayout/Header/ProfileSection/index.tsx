@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
+import { useTheme, useColorScheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -12,53 +11,64 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
 
 // project imports
+import { useAuth } from 'contexts/AuthContext';
+import ResetPasswordDialog from 'views/settings/ResetPasswordDialog';
 import MainCard from 'ui-component/cards/MainCard';
+import RemixIconAdapter from 'ui-component/extended/RemixIconAdapter';
 import Transitions from 'ui-component/extended/Transitions';
 import useConfig from 'hooks/useConfig';
-import { useAuth } from 'contexts/AuthContext';
-import { useNavigate } from 'react-router';
 
-// assets
-import User1 from 'assets/images/users/user-round.svg';
+const IconLogout = (props) => <RemixIconAdapter className="ri-logout-box-r-line" {...props} />;
+const IconKey = (props) => <RemixIconAdapter className="ri-key-2-line" {...props} />;
+const IconMoon = (props) => <RemixIconAdapter className="ri-moon-line" {...props} />;
+const IconMenu = (props) => <RemixIconAdapter className="ri-menu-line" {...props} />;
 
 // ==============================|| PROFILE MENU ||============================== //
 
 export default function ProfileSection() {
   const theme = useTheme();
+  const { mode, setMode } = useColorScheme();
+  const { user, logout } = useAuth();
   const {
     state: { borderRadius }
   } = useConfig();
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const action = (e as CustomEvent).detail;
+      if (action === 'change-password') setPasswordDialogOpen(true);
+      if (action === 'logout') logout();
+    };
+    window.addEventListener('nekobot-search-action', handler);
+    return () => window.removeEventListener('nekobot-search-action', handler);
+  }, [logout]);
+
+  /**
+   * anchorRef is used on different components and specifying one type leads to other components throwing an error
+   * */
   const anchorRef = useRef(null);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
 
+  const handleIconClick = () => {
+    setMode(mode === 'dark' ? 'light' : 'dark');
+  };
+
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {
       return;
     }
-    setOpen(false);
-  };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setOpen(false);
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    setOpen(false);
   };
 
   const prevOpen = useRef(open);
@@ -66,36 +76,60 @@ export default function ProfileSection() {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
+
     prevOpen.current = open;
   }, [open]);
 
+  const getInitials = (name: string) => {
+    return name ? name.charAt(0).toUpperCase() : 'U';
+  };
+
   return (
     <>
-      <Tooltip title="用户菜单">
-        <IconButton
+      <Box sx={{ ml: 1.5 }}>
+        <Avatar
+          variant="rounded"
+          sx={{
+            ...theme.typography.commonAvatar,
+            ...theme.typography.mediumAvatar,
+            transition: 'all .2s ease-in-out',
+            color: mode === 'dark' ? '#ffffff' : '#333333',
+            background: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+            '&:hover': {
+              color: mode === 'dark' ? '#ffffff' : '#000000',
+              background: mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)'
+            }
+          }}
+          onClick={handleIconClick}
+          aria-label="toggle-theme"
+        >
+          <IconMoon stroke={1.5} size="20px" />
+        </Avatar>
+      </Box>
+      <Box sx={{ ml: 1.5 }}>
+        <Avatar
+          variant="rounded"
           ref={anchorRef}
+          sx={{
+            ...theme.typography.commonAvatar,
+            ...theme.typography.mediumAvatar,
+            transition: 'all .2s ease-in-out',
+            color: mode === 'dark' ? '#ffffff' : '#333333',
+            background: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+            '&:hover, &[aria-controls="menu-list-grow"]': {
+              color: '#ffffff',
+              background: theme.vars.palette.primary.main
+            }
+          }}
           aria-controls={open ? 'menu-list-grow' : undefined}
           aria-haspopup="true"
           onClick={handleToggle}
-          aria-label="user-menu"
-          sx={{
-            ml: 1,
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            bgcolor: 'background.paper',
-            border: '1px solid',
-            borderColor: 'divider',
-            '&:hover': {
-              bgcolor: 'action.hover',
-            },
-          }}
         >
-          <Box className="ri-user-3-line" sx={{ fontSize: '20px' }} />
-        </IconButton>
-      </Tooltip>
+          <IconMenu stroke={1.5} size="20px" />
+        </Avatar>
+      </Box>
       <Popper
-        placement="bottom-end"
+        placement="bottom"
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
@@ -116,55 +150,26 @@ export default function ProfileSection() {
               <Paper>
                 {open && (
                   <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
-                    {/* 用户信息 */}
-                    <Box sx={{ p: 2, pb: 1 }}>
-                      <Stack spacing={0.5}>
-                        <Stack direction="row" sx={{ alignItems: 'center', gap: 0.5 }}>
-                          <Typography variant="h5">你好,</Typography>
-                          <Typography component="span" variant="h5" sx={{ fontWeight: 600 }}>
-                            {user?.username || 'User'}
-                          </Typography>
-                        </Stack>
-                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                          管理员
-                        </Typography>
-                      </Stack>
-                    </Box>
-
-                    <Divider />
-
-                    {/* 菜单选项 */}
-                    <Box sx={{ p: 1 }}>
+                    <Box sx={{ p: 2 }}>
                       <List
                         component="nav"
                         sx={{
                           width: '100%',
-                          py: 0,
+                          maxWidth: 200,
                           borderRadius: `${borderRadius}px`,
-                          '& .MuiListItemButton-root': {
-                            borderRadius: `${borderRadius}px`,
-                            mx: 0.5,
-                          },
+                          '& .MuiListItemButton-root': { mt: 0.5 }
                         }}
                       >
-                        <ListItemButton
-                          sx={{ borderRadius: `${borderRadius}px` }}
-                          onClick={() => {
-                            setOpen(false);
-                            navigate('/settings/reset-password');
-                          }}
-                        >
+                        <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} onClick={() => { setPasswordDialogOpen(true); handleClose({ target: {} }); }}>
                           <ListItemIcon>
-                            <Box className="ri-lock-password-line" sx={{ fontSize: '20px' }} />
+                            <IconKey stroke={1.5} size="20px" />
                           </ListItemIcon>
-                          <ListItemText primary={<Typography variant="body2">重置密码</Typography>} />
+                          <ListItemText primary={<Typography variant="body2">修改密码</Typography>} />
                         </ListItemButton>
-                        <ListItemButton
-                          sx={{ borderRadius: `${borderRadius}px` }}
-                          onClick={handleLogout}
-                        >
+                        <Divider sx={{ my: 0.5 }} />
+                        <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} onClick={() => { logout(); handleClose({ target: {} }); }}>
                           <ListItemIcon>
-                            <Box className="ri-logout-box-r-line" sx={{ fontSize: '20px' }} />
+                            <IconLogout stroke={1.5} size="20px" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">退出登录</Typography>} />
                         </ListItemButton>
@@ -177,6 +182,7 @@ export default function ProfileSection() {
           </ClickAwayListener>
         )}
       </Popper>
+      <ResetPasswordDialog open={passwordDialogOpen} onClose={() => setPasswordDialogOpen(false)} />
     </>
   );
 }

@@ -1,12 +1,14 @@
+import { ForwardRefExoticComponent } from 'react';
+import { IconProps } from '@mui/material';
+
 // ==============================|| MENU ITEM TYPES ||============================== //
 
 export interface MenuItem {
   id: string;
   title: string;
-  caption?: string;
   type: 'group' | 'collapse' | 'item' | 'divider';
   url?: string;
-  icon?: string; // remixicon CSS 类名，例如 'ri-dashboard-line'
+  icon?: ForwardRefExoticComponent<IconProps & Record<string, unknown>>;
   breadcrumbs?: boolean;
   children?: MenuItem[];
   external?: boolean;

@@ -1,35 +1,32 @@
-/**
- * 认证相关 API
- */
-
 import apiClient from './client';
-import type {
-  LoginRequest,
-  LoginResponse,
-  ChangePasswordRequest,
-} from 'types/auth';
-import type { ApiResponse } from 'types/api';
 
-/**
- * 用户登录
- */
-export async function login(data: LoginRequest): Promise<ApiResponse<LoginResponse>> {
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  username: string;
+}
+
+export interface ChangePasswordRequest {
+  old_password: string;
+  new_password: string;
+}
+
+export async function login(data: LoginRequest) {
   const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/login', data);
   return response.data;
 }
 
-/**
- * 用户登出
- */
-export async function logout(): Promise<ApiResponse<void>> {
-  const response = await apiClient.post<ApiResponse<void>>('/api/auth/logout');
-  return response.data;
-}
-
-/**
- * 修改密码
- */
-export async function changePassword(data: ChangePasswordRequest): Promise<ApiResponse<void>> {
+export async function changePassword(data: ChangePasswordRequest) {
   const response = await apiClient.post<ApiResponse<void>>('/api/auth/change-password', data);
   return response.data;
 }

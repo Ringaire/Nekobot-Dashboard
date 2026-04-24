@@ -83,7 +83,7 @@ export default function NavGroup({ item, lastItem, remItems, lastItemId, selecte
       default:
         return (
           <Typography key={menu?.id} variant="h6" align="center" sx={{ color: 'error.main' }}>
-            Menu Items Error
+            菜单项错误
           </Typography>
         );
     }

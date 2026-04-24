@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(tree:*)",
-      "Bash(npx tsc --noEmit)",
-      "mcp__chrome-devtools__evaluate_script"
-    ]
-  }
-}

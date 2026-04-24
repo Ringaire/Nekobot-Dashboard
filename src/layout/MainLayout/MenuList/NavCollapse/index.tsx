@@ -18,14 +18,17 @@ import Box from '@mui/material/Box';
 
 // project imports
 import NavItem from '../NavItem';
+import RemixIconAdapter from 'ui-component/extended/RemixIconAdapter';
 import Transitions from 'ui-component/extended/Transitions';
+import RemixIcon from 'ui-component/extended/RemixIcon';
 
 import { useGetMenuMaster } from 'api/menu';
 import useConfig from 'hooks/useConfig';
 import useMenuCollapse from 'hooks/useMenuCollapse';
 
-// assets
-import RemixIcon from 'ui-component/RemixIcon';
+const IconChevronDown = (props) => <RemixIconAdapter className="ri-arrow-down-s-line" {...props} />;
+const IconChevronRight = (props) => <RemixIconAdapter className="ri-arrow-right-s-line" {...props} />;
+const IconChevronUp = (props) => <RemixIconAdapter className="ri-arrow-up-s-line" {...props} />;
 
 export default function NavCollapse({ menu, level, parentId, setSelectedID }: any) {
   const theme = useTheme();
@@ -112,22 +115,17 @@ export default function NavCollapse({ menu, level, parentId, setSelectedID }: an
 
   const isSelected = selected === menu.id;
 
-  // 使用 remixicon 图标
+  const Icon = menu.icon;
   const menuIcon = menu.icon ? (
-    <RemixIcon icon={menu.icon} size={drawerOpen ? 20 : 24} />
+    <Icon strokeWidth={1.5} size={drawerOpen ? '20px' : '24px'} />
   ) : (
-    <RemixIcon
-      icon="ri-checkbox-blank-circle-fill"
-      size={isSelected ? 8 : 6}
-      sx={{ color: isSelected ? 'secondary.main' : 'text.primary' }}
-    />
+    <RemixIcon className="ri-checkbox-blank-circle-fill" fontSize={level > 0 ? 'inherit' : '1rem'} sx={{ width: isSelected ? 8 : 6, height: isSelected ? 8 : 6 }} />
   );
 
-  // 使用 remixicon 折叠图标
   const collapseIcon = drawerOpen ? (
-    <RemixIcon icon="ri-arrow-up-s-line" size={16} />
+    <IconChevronUp stroke={1.5} size="16px" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
   ) : (
-    <RemixIcon icon="ri-arrow-right-s-line" size={16} />
+    <IconChevronRight stroke={1.5} size="16px" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
   );
 
   return (
@@ -138,7 +136,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedID }: an
           borderRadius: `${borderRadius}px`,
           mb: 0.5,
           ...(drawerOpen && level !== 1 && { ml: `${level * 18}px` }),
-          ...(!drawerOpen && { pl: 1.25 }),
+          ...(!drawerOpen && { pl: 2.25 }),
           ...((!drawerOpen || level !== 1) && {
             py: level === 1 ? 0 : 1,
             '&:hover': { bgcolor: 'transparent' },
@@ -154,20 +152,19 @@ export default function NavCollapse({ menu, level, parentId, setSelectedID }: an
           <ListItemIcon
             sx={{
               minWidth: level === 1 ? 36 : 18,
-              color: isSelected ? 'secondary.main' : 'text.primary',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              color: isSelected ? 'primary.main' : 'text.primary',
               ...(!drawerOpen &&
                 level === 1 && {
                   borderRadius: `${borderRadius}px`,
                   width: 46,
                   height: 46,
-                  '&:hover': { bgcolor: 'secondary.light' },
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover': { bgcolor: 'primary.light' },
 
                   ...((isSelected || anchorEl) && {
-                    bgcolor: 'secondary.light',
-                    '&:hover': { bgcolor: 'secondary.light' }
+                    bgcolor: 'primary.light',
+                    '&:hover': { bgcolor: 'primary.light' }
                   })
                 })
             }}
@@ -214,7 +211,7 @@ export default function NavCollapse({ menu, level, parentId, setSelectedID }: an
           </Tooltip>
         )}
 
-        {openMini || open ? collapseIcon : <Box className="ri-arrow-down-s-line" sx={{ fontSize: '16px', mt: 'auto', mb: 'auto' }} />}
+        {openMini || open ? collapseIcon : <IconChevronDown stroke={1.5} size="16px" style={{ marginTop: 'auto', marginBottom: 'auto' }} />}
 
         <Activity mode={!drawerOpen ? 'visible' : 'hidden'}>
           <Popper

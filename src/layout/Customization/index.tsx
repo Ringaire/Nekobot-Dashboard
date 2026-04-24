@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { Activity, useState } from 'react';
+import { Activity, useEffect, useState } from 'react';
 
 // material-ui
 import { useColorScheme, useTheme } from '@mui/material/styles';
@@ -21,8 +21,12 @@ import BorderRadius from './BorderRadius';
 import { DEFAULT_THEME_MODE } from 'config';
 import MainCard from 'ui-component/cards/MainCard';
 import AnimateButton from 'ui-component/extended/AnimateButton';
+import RemixIconAdapter from 'ui-component/extended/RemixIconAdapter';
 import SimpleBar from 'ui-component/third-party/SimpleBar';
 import useConfig from 'hooks/useConfig';
+
+const IconSettings = (props) => <RemixIconAdapter className="ri-settings-3-line" {...props} />;
+const IconPlus = (props) => <RemixIconAdapter className="ri-add-line" {...props} />;
 
 function CustomTabPanel({ children, value, index, ...other }) {
   return (
@@ -45,6 +49,14 @@ export default function Customization() {
     setOpen(!open);
   };
 
+  useEffect(() => {
+    const handler = (e: Event) => {
+      if ((e as CustomEvent).detail === 'theme-customize') setOpen(true);
+    };
+    window.addEventListener('nekobot-search-action', handler);
+    return () => window.removeEventListener('nekobot-search-action', handler);
+  }, []);
+
   const handleReset = () => {
     setMode(DEFAULT_THEME_MODE);
     resetState();
@@ -59,14 +71,14 @@ export default function Customization() {
           onClick={handleToggle}
           size="medium"
           variant="circular"
-          color="secondary"
+          color="primary"
           sx={{
             borderRadius: 0,
             borderTopLeftRadius: '50%',
             borderBottomLeftRadius: '50%',
             borderTopRightRadius: '50%',
             borderBottomRightRadius: '4px',
-            top: '25%',
+            bottom: 10,
             position: 'fixed',
             right: 10,
             zIndex: 1200,
@@ -75,7 +87,7 @@ export default function Customization() {
         >
           <AnimateButton type="rotate">
             <IconButton color="inherit" size="large" disableRipple aria-label="live customize">
-              <Box className="ri-settings-3-line" sx={{ fontSize: '24px' }} />
+              <IconSettings />
             </IconButton>
           </AnimateButton>
         </Fab>
@@ -91,7 +103,7 @@ export default function Customization() {
                     Reset
                   </Button>
                   <IconButton sx={{ p: 0, color: 'grey.600' }} onClick={handleToggle}>
-                    <Box className="ri-add-line" sx={{ fontSize: '24px', transform: 'rotate(45deg)' }} />
+                    <IconPlus size={24} style={{ transform: 'rotate(45deg)' }} />
                   </IconButton>
                 </Stack>
               </Stack>

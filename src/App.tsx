@@ -9,6 +9,8 @@ import { AuthProvider } from './contexts/AuthContext';
 
 import ThemeCustomization from './themes';
 
+// auth provider
+
 // ==============================|| APP ||============================== //
 
 export default function App() {
@@ -16,7 +18,9 @@ export default function App() {
     <ThemeCustomization>
       <AuthProvider>
         <NavigationScroll>
-          <RouterProvider router={router} />
+          <>
+            <RouterProvider router={router} />
+          </>
         </NavigationScroll>
       </AuthProvider>
     </ThemeCustomization>

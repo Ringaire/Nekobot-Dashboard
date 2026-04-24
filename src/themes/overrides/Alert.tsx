@@ -1,6 +1,6 @@
 // project imports
+import RemixIcon from 'ui-component/extended/RemixIcon';
 import { withAlpha } from 'utils/colorUtils';
-import RemixIcon from 'ui-component/RemixIcon';
 
 // ==============================|| OVERRIDES - ALERT ||============================== //
 
@@ -53,7 +53,7 @@ export default function Alert(theme) {
     MuiAlert: {
       defaultProps: {
         iconMapping: {
-          primary: <RemixIcon icon="ri-information-line" size="inherit" sx={{ fontSize: 'inherit' }} />
+          primary: <RemixIcon className="ri-information-line" fontSize="inherit" />
         }
       },
       styleOverrides: {

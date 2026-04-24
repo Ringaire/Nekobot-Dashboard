@@ -64,6 +64,9 @@ export default function ThemeCustomization({ children }: ThemeCustomizationProps
       colorSchemes: {
         light: {
           palette: palette.light
+        },
+        dark: {
+          palette: palette.dark
         }
       },
       cssVariables: {

@@ -9,10 +9,12 @@ function openedMixin(theme: any) {
   return {
     width: drawerWidth,
     borderRight: 'none',
-    zIndex: theme.zIndex.drawer,
+    zIndex: 1099,
     background: theme.vars.palette.background.default,
     overflowX: 'hidden' as const,
     boxShadow: 'none',
+    marginTop: '64px',
+    height: 'calc(100% - 64px)',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen + 200
@@ -23,10 +25,12 @@ function openedMixin(theme: any) {
 function closedMixin(theme) {
   return {
     borderRight: 'none',
-    zIndex: theme.zIndex.drawer,
+    zIndex: 1099,
     background: theme.vars.palette.background.default,
     overflowX: 'hidden' as const,
     width: 72,
+    marginTop: '64px',
+    height: 'calc(100% - 64px)',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen + 200

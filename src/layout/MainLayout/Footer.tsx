@@ -4,8 +4,10 @@ import Typography from '@mui/material/Typography';
 
 export default function Footer() {
   return (
-    <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', pt: 3, mt: 'auto' }}>
-      <Typography variant="caption">&copy; NekoBot Team</Typography>
+    <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'center', pt: 3, mt: 'auto' }}>
+      <Typography variant="caption" color="text.secondary">
+        NekoBot Dashboard
+      </Typography>
     </Stack>
   );
 }

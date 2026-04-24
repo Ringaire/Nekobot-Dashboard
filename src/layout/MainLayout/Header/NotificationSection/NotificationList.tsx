@@ -15,10 +15,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // project imports
+import RemixIconAdapter from 'ui-component/extended/RemixIconAdapter';
 import { withAlpha } from 'utils/colorUtils';
 
 // assets
 import User1 from 'assets/images/users/user-round.svg';
+
+const IconBrandTelegram = (props) => <RemixIconAdapter className="ri-telegram-2-line" {...props} />;
+const IconBuildingStore = (props) => <RemixIconAdapter className="ri-store-2-line" {...props} />;
+const IconMailbox = (props) => <RemixIconAdapter className="ri-mail-line" {...props} />;
+const IconPhoto = (props) => <RemixIconAdapter className="ri-image-line" {...props} />;
 
 function ListItemWrapper({ children }) {
   const theme = useTheme();
@@ -87,7 +93,7 @@ export default function NotificationList() {
                 bgcolor: 'success.light'
               }}
             >
-              <Box className="ri-store-2-line" sx={{ fontSize: '20px' }} />
+              <IconBuildingStore stroke={1.5} size="20px" />
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={<Typography variant="subtitle1">Store Verification Done</Typography>} />
@@ -114,14 +120,14 @@ export default function NotificationList() {
                 bgcolor: 'primary.light'
               }}
             >
-              <Box className="ri-mail-send-line" sx={{ fontSize: '20px' }} />
+              <IconMailbox stroke={1.5} size="20px" />
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={<Typography variant="subtitle1">Check Your Mail.</Typography>} />
         </ListItem>
         <Stack sx={containerSX}>
           <Typography variant="subtitle2">All done! Now check your inbox as you&apos;re in for a sweet treat!</Typography>
-          <Button variant="contained" endIcon={<Box className="ri-telegram-fill" sx={{ fontSize: '20px' }} />} sx={{ width: 'min-content' }}>
+          <Button variant="contained" endIcon={<IconBrandTelegram stroke={1.5} size={20} />} sx={{ width: 'min-content' }}>
             Mail
           </Button>
         </Stack>
@@ -148,9 +154,9 @@ export default function NotificationList() {
               21 Jan 2020
             </Typography>
           </Typography>
-          <Card sx={{ bgcolor: 'secondary.light' }}>
+          <Card sx={{ bgcolor: 'primary.light' }}>
             <Stack direction="row" sx={{ p: 2.5, gap: 2 }}>
-              <Box className="ri-image-line" sx={{ fontSize: '20px' }} />
+              <IconPhoto stroke={1.5} size="20px" />
               <Typography variant="subtitle1">demo.jpg</Typography>
             </Stack>
           </Card>

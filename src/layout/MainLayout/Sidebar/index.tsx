@@ -1,28 +1,96 @@
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
-import Chip from '@mui/material/Chip';
 import Drawer from '@mui/material/Drawer';
-import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 // project imports
 import MenuList from '../MenuList';
-import LogoSection from '../LogoSection';
 import MiniDrawerStyled from './MiniDrawerStyled';
 
 import useConfig from 'hooks/useConfig';
 import { drawerWidth } from 'store/constant';
 import SimpleBar from 'ui-component/third-party/SimpleBar';
+import RemixIcon from 'ui-component/extended/RemixIcon';
 
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
+
+const GITHUB_REPO = 'OfficialNekoTeam/NekoBot';
+
+function formatStarCount(count: number): string {
+  if (count >= 10000) return (count / 10000).toFixed(1) + 'w';
+  if (count >= 1000) return (count / 1000).toFixed(1) + 'k';
+  return count.toString();
+}
+
+function SidebarFooter({ drawerOpen }: { drawerOpen: boolean }) {
+  const [starCount, setStarCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${GITHUB_REPO}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.stargazers_count != null) setStarCount(data.stargazers_count);
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!drawerOpen) return null;
+
+  return (
+    <Stack spacing={0.5} sx={{ px: 2, pb: 2 }}>
+      <Stack
+        component="a"
+        href={`https://github.com/${GITHUB_REPO}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: 'center', justifyContent: 'flex-start', pl: 1, textDecoration: 'none', color: 'inherit', '&:hover': { color: 'primary.main' } }}
+      >
+        <RemixIcon className="ri-github-fill" sx={{ fontSize: 20, color: 'primary.main' }} />
+        <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'primary.main' }}>GitHub</Typography>
+        {starCount !== null && (
+          <>
+            <RemixIcon className="ri-star-fill" sx={{ fontSize: 14, color: '#ffb300', ml: 'auto' }} />
+            <Typography variant="body2" sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>{formatStarCount(starCount)}</Typography>
+          </>
+        )}
+      </Stack>
+      <Stack
+        component="a"
+        href="https://docs.nekobot.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: 'center', justifyContent: 'flex-start', pl: 1, textDecoration: 'none', color: 'inherit', '&:hover': { color: 'primary.main' } }}
+      >
+        <RemixIcon className="ri-book-open-line" sx={{ fontSize: 20, color: 'primary.main' }} />
+        <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'primary.main' }}>文档</Typography>
+      </Stack>
+      <Stack
+        component="a"
+        href={`https://github.com/${GITHUB_REPO}/issues`}
+        target="_blank"
+        rel="noopener noreferrer"
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: 'center', justifyContent: 'flex-start', pl: 1, textDecoration: 'none', color: 'inherit', '&:hover': { color: 'primary.main' } }}
+      >
+        <RemixIcon className="ri-question-line" sx={{ fontSize: 20, color: 'primary.main' }} />
+        <Typography variant="body2" sx={{ fontSize: '0.8rem', color: 'primary.main' }}>问题反馈</Typography>
+      </Stack>
+    </Stack>
+  );
+}
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 
 function Sidebar() {
-  const theme = useTheme();
-  const downMD = useMediaQuery(theme.breakpoints.down('md'));
+  const downMD = useMediaQuery((theme) => theme.breakpoints.down('md'));
 
   const { menuMaster } = useGetMenuMaster();
   const drawerOpen = menuMaster.isDashboardDrawerOpened;
@@ -31,39 +99,26 @@ function Sidebar() {
     state: { miniDrawer }
   } = useConfig();
 
-  const logo = useMemo(
-    () => (
-      <Box sx={{ display: 'flex', p: 2 }}>
-        <LogoSection drawerOpen={drawerOpen} />
-      </Box>
-    ),
-    [drawerOpen]
-  );
-
   const drawer = useMemo(() => {
-    const drawerContent = (
-      <Stack direction="row" sx={{ justifyContent: 'center', mb: 2 }}>
-        <Chip label={import.meta.env.VITE_APP_VERSION} size="small" color="default" />
-      </Stack>
-    );
-
     let drawerSX = { paddingLeft: '0px', paddingRight: '0px', marginTop: '20px' };
     if (drawerOpen) drawerSX = { paddingLeft: '16px', paddingRight: '16px', marginTop: '0px' };
 
-    if (downMD) {
-      return (
-        <Box sx={drawerSX}>
-          <MenuList />
-          {drawerOpen && drawerContent}
-        </Box>
-      );
-    }
-
     return (
-      <SimpleBar sx={{ height: 'calc(100vh - 90px)', ...drawerSX }}>
-        <MenuList />
-        {drawerOpen && drawerContent}
-      </SimpleBar>
+      <>
+        {downMD ? (
+          <Box sx={drawerSX}>
+            <MenuList />
+            {drawerOpen && <SidebarFooter drawerOpen={drawerOpen} />}
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 90px)' }}>
+            <SimpleBar sx={{ flex: 1, ...drawerSX }}>
+              <MenuList />
+            </SimpleBar>
+            <SidebarFooter drawerOpen={drawerOpen} />
+          </Box>
+        )}
+      </>
     );
   }, [downMD, drawerOpen]);
 
@@ -78,8 +133,8 @@ function Sidebar() {
           slotProps={{
             paper: {
               sx: {
-                mt: downMD ? 0 : 11,
-                zIndex: theme.zIndex.drawer,
+                mt: downMD ? 0 : 8,
+                zIndex: 1099,
                 width: drawerWidth,
                 bgcolor: 'background.default',
                 color: 'text.primary',
@@ -89,16 +144,11 @@ function Sidebar() {
           }}
           ModalProps={{ keepMounted: true }}
           color="inherit"
-          sx={{
-            zIndex: theme.zIndex.drawer,
-          }}
         >
-          {downMD && logo}
-          {drawer}
+        {drawer}
         </Drawer>
       ) : (
         <MiniDrawerStyled variant="permanent" open={drawerOpen}>
-          {logo}
           {drawer}
         </MiniDrawerStyled>
       )}

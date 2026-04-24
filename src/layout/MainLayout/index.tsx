@@ -13,6 +13,7 @@ import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import MainContentStyled from './MainContentStyled';
+import Customization from '../Customization';
 import Loader from 'ui-component/Loader';
 import Breadcrumbs from 'ui-component/extended/Breadcrumbs';
 
@@ -46,17 +47,8 @@ export default function MainLayout() {
   return (
     <Box sx={{ display: 'flex' }}>
       {/* header */}
-      <AppBar
-        enableColorOnDark
-        position="fixed"
-        color="inherit"
-        elevation={0}
-        sx={{
-          bgcolor: 'background.default',
-          zIndex: theme => theme.zIndex.drawer - 100,
-        }}
-      >
-        <Toolbar sx={{ p: 2 }}>
+      <AppBar enableColorOnDark position="fixed" color="inherit" elevation={0} sx={{ bgcolor: 'background.paper' }}>
+        <Toolbar sx={{ px: 2, py: 0.5 }}>
           <Header />
         </Toolbar>
       </AppBar>
@@ -73,6 +65,7 @@ export default function MainLayout() {
           <Footer />
         </Box>
       </MainContentStyled>
+      <Customization />
     </Box>
   );
 }

@@ -1,25 +1,28 @@
-// assets - 使用 remixicon 替换 @tabler/icons-react
-import 'remixicon/fonts/remixicon.css';
+import { createElement } from 'react';
 
-// 菜单项类型
-import { MenuItem } from './types';
+import RemixIconAdapter from 'ui-component/extended/RemixIconAdapter';
+
+const IconDashboard = (props) => createElement(RemixIconAdapter, { className: 'ri-dashboard-line', ...props });
+
+// constant
+const icons = { IconDashboard };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
-const dashboard: MenuItem = {
+const dashboard = {
   id: 'dashboard',
-  title: '仪表板',
+  title: '仪表盘',
   type: 'group',
   children: [
     {
       id: 'default',
-      title: '概览',
+      title: '仪表盘',
       type: 'item',
       url: '/dashboard',
-      icon: 'ri-dashboard-line',
-      breadcrumbs: false,
-    },
-  ],
+      icon: icons.IconDashboard,
+      breadcrumbs: false
+    }
+  ]
 };
 
 export default dashboard;

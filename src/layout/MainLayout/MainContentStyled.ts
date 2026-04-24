@@ -14,14 +14,14 @@ interface MainContentStyledProps {
 const MainContentStyled = styled('main', {
   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'borderRadius'
 })<MainContentStyledProps>(({ theme, open, borderRadius }) => ({
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: theme.vars.palette.background.default,
   minWidth: '1%',
   width: '100%',
-  minHeight: 'calc(100vh - 88px)',
+  minHeight: 'calc(100vh - 64px)',
   flexGrow: 1,
-  padding: 20,
-  marginTop: 88,
-  marginRight: 20,
+  padding: 12,
+  marginTop: 64,
+  marginRight: 12,
   borderRadius: `${borderRadius}px`,
   borderBottomLeftRadius: 0,
   borderBottomRightRadius: 0,
@@ -33,7 +33,7 @@ const MainContentStyled = styled('main', {
     [theme.breakpoints.up('md')]: {
       marginLeft: -(drawerWidth - 72),
       width: `calc(100% - ${drawerWidth}px)`,
-      marginTop: 88
+      marginTop: 64
     }
   }),
   ...(open && {
@@ -42,24 +42,23 @@ const MainContentStyled = styled('main', {
       duration: theme.transitions.duration.shorter + 200
     }),
     marginLeft: 0,
-    marginTop: 88,
+    marginTop: 64,
     width: `calc(100% - ${drawerWidth}px)`,
     [theme.breakpoints.up('md')]: {
-      marginTop: 88
+      marginTop: 64
     }
   }),
   [theme.breakpoints.down('md')]: {
-    marginLeft: 20,
-    padding: 16,
-    marginTop: 88,
+    marginLeft: 12,
+    padding: 10,
+    marginTop: 64,
     ...(!open && {
       width: `calc(100% - ${drawerWidth}px)`
     })
   },
   [theme.breakpoints.down('sm')]: {
-    marginLeft: 10,
-    marginRight: 10,
-    padding: 12
+    marginLeft: 6,
+    marginRight: 6
   }
 }));
 

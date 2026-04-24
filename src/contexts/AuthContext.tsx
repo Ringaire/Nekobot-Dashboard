@@ -4,8 +4,13 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { login as apiLogin, logout as apiLogout } from 'api';
-import type { LoginRequest, UserInfo } from 'types/auth';
+import { login as apiLogin, changePassword } from '../api/auth';
+import type { LoginRequest, ApiResponse, LoginResponse } from '../api/auth';
+
+export interface UserInfo {
+  username: string;
+  token: string;
+}
 
 interface AuthContextType {
   user: UserInfo | null;
@@ -14,6 +19,7 @@ interface AuthContextType {
   login: (credentials: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<ApiResponse<void>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,16 +67,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // 登出
   const logout = useCallback(async () => {
-    try {
-      await apiLogout();
-    } catch (error) {
-      // 忽略登出 API 错误，继续清除本地状态
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('username');
-      setUser(null);
-    }
+    // 清除本地存储的认证信息
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    sessionStorage.removeItem('access_token');
+    sessionStorage.removeItem('username');
+    setUser(null);
+  }, []);
+
+  // 修改密码
+  const changeUserPassword = useCallback(async (oldPassword: string, newPassword: string): Promise<ApiResponse<void>> => {
+    return await changePassword({
+      old_password: oldPassword,
+      new_password: newPassword
+    });
   }, []);
 
   // 初始化时检查认证状态
@@ -85,7 +95,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     checkAuth,
+    changeUserPassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthContext;

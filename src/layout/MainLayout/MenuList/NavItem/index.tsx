@@ -13,14 +13,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 
 // project imports
 import { handlerDrawerOpen, useGetMenuMaster } from 'api/menu';
 import useConfig from 'hooks/useConfig';
-
-// assets
-import RemixIcon from 'ui-component/RemixIcon';
+import RemixIcon from 'ui-component/extended/RemixIcon';
 
 export default function NavItem({ item, level, isParents = false, setSelectedID }: any) {
   const theme = useTheme();
@@ -49,21 +46,11 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
     window.removeEventListener('resize', compareSize);
   }, []);
 
-  // 使用 remixicon 图标
+  const Icon = item?.icon;
   const itemIcon = item?.icon ? (
-    <RemixIcon
-      icon={item.icon}
-      size={drawerOpen ? 20 : 24}
-      sx={{
-        ...((isParents || level !== 1) && { fontSize: '20px !important' }),
-      }}
-    />
+    <Icon stroke={1.5} size={drawerOpen ? '20px' : '24px'} style={{ ...(isParents && { fontSize: 20, stroke: '1.5' }) }} />
   ) : (
-    <RemixIcon
-      icon="ri-checkbox-blank-circle-fill"
-      size={isSelected ? 8 : 6}
-      sx={{ color: isSelected ? 'secondary.main' : 'text.primary' }}
-    />
+    <RemixIcon className="ri-checkbox-blank-circle-fill" fontSize={level > 0 ? 'inherit' : '1rem'} sx={{ width: isSelected ? 8 : 6, height: isSelected ? 8 : 6 }} />
   );
 
   let itemTarget = '_self';
@@ -92,7 +79,7 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
           borderRadius: `${borderRadius}px`,
           mb: 0.5,
           ...(drawerOpen && level !== 1 && { ml: `${level * 18}px` }),
-          ...(!drawerOpen && { pl: 1.25 }),
+          ...(!drawerOpen && { pl: 2.25 }),
           ...((!drawerOpen || level !== 1) && {
             py: level === 1 ? 0 : 1,
             '&:hover': { bgcolor: 'transparent' },
@@ -109,19 +96,18 @@ export default function NavItem({ item, level, isParents = false, setSelectedID 
           <ListItemIcon
             sx={{
               minWidth: level === 1 ? 36 : 18,
-              color: isSelected ? 'secondary.main' : 'text.primary',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              color: isSelected ? 'primary.main' : 'text.primary',
               ...(!drawerOpen &&
                 level === 1 && {
                   borderRadius: `${borderRadius}px`,
                   width: 46,
                   height: 46,
-                  '&:hover': { bgcolor: 'secondary.light' },
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover': { bgcolor: 'primary.light' },
                   ...(isSelected && {
-                    bgcolor: 'secondary.light',
-                    '&:hover': { bgcolor: 'secondary.light' }
+                    bgcolor: 'primary.light',
+                    '&:hover': { bgcolor: 'primary.light' }
                   })
                 })
             }}

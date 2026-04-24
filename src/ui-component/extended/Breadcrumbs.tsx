@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 // material-ui
@@ -13,7 +14,13 @@ import Box from '@mui/material/Box';
 
 // project imports
 import navigation from 'menu-items';
-import RemixIcon from 'ui-component/RemixIcon';
+import RemixIcon from './RemixIcon';
+import RemixIconAdapter from './RemixIconAdapter';
+
+const IconChevronRight = (props) => <RemixIconAdapter className="ri-arrow-right-s-line" {...props} />;
+const IconTallymark1 = (props) => <RemixIconAdapter className="ri-subtract-line" {...props} />;
+
+const BreadcrumbTreeIcon = ({ style }: { style?: CSSProperties }) => <RemixIcon className="ri-git-branch-line" fontSize="1rem" style={style} />;
 
 // ==============================|| BREADCRUMBS TITLE ||============================== //
 
@@ -37,7 +44,7 @@ export default function Breadcrumbs({
   links,
   maxItems,
   rightAlign = true,
-  separator,
+  separator = IconChevronRight,
   title = true,
   titleBottom,
   sx,
@@ -53,7 +60,7 @@ export default function Breadcrumbs({
     marginTop: -2,
     width: '1rem',
     height: '1rem',
-    color: theme.palette.secondary.main
+    color: theme.vars.palette.primary.main
   };
 
   const linkSX = {
@@ -100,20 +107,20 @@ export default function Breadcrumbs({
     }
   };
 
-  // item separator - 使用 remixicon
-  const separatorIcon = separator ? (
-    <RemixIcon icon={separator} size={16} sx={{ ml: 1.25, mr: 1.25 }} />
-  ) : (
-    <RemixIcon icon="ri-arrow-right-s-line" size={16} />
-  );
+  // item separator
+  const SeparatorIcon = separator;
+  const separatorIcon = separator ? <SeparatorIcon stroke={1.5} size="16px" /> : <IconTallymark1 stroke={1.5} size="16px" />;
 
   let mainContent;
   let itemContent;
   let breadcrumbContent = <Typography />;
   let itemTitle = '';
+  let CollapseIcon: any;
+  let ItemIcon: any;
 
   // collapse item
   if (main && main.type === 'collapse') {
+    CollapseIcon = main.icon ? main.icon : BreadcrumbTreeIcon;
     mainContent = (
       <Typography
         {...(main.url && { component: Link, to: main.url })}
@@ -129,11 +136,7 @@ export default function Breadcrumbs({
         }}
         color={window.location.pathname === main.url ? 'text.primary' : 'text.secondary'}
       >
-        {icons && typeof main.icon === 'string' ? (
-          <RemixIcon icon={main.icon} size={16} sx={iconSX} />
-        ) : icons && main.icon ? (
-          <RemixIcon icon="ri-node-tree" size={16} sx={iconSX} />
-        ) : null}
+        {icons && <CollapseIcon style={{ ...iconSX }} />}
         {main.title}
       </Typography>
     );
@@ -158,8 +161,8 @@ export default function Breadcrumbs({
                 sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
               >
                 <Typography component={Link} to="/" variant="h6" sx={{ ...linkSX, color: 'text.secondary' }}>
-                  {icons && <RemixIcon icon="ri-home-4-line" size={16} sx={iconSX} />}
-                  {icon && !icons && <RemixIcon icon="ri-home-line" size={16} sx={{ ...iconSX, mr: 0 }} />}
+                  {icons && <RemixIcon className="ri-home-4-line" fontSize="1rem" style={iconSX} />}
+                  {icon && !icons && <RemixIcon className="ri-home-4-line" fontSize="1rem" style={{ ...iconSX, marginRight: 0 }} />}
                   {(!icon || icons) && 'Dashboard'}
                 </Typography>
                 {mainContent}
@@ -177,6 +180,7 @@ export default function Breadcrumbs({
   if ((item && item.type === 'item') || (item?.type === 'group' && item?.url) || custom) {
     itemTitle = item?.title || '';
 
+    ItemIcon = item?.icon ? item.icon : BreadcrumbTreeIcon;
     itemContent = (
       <Typography
         variant="h6"
@@ -192,11 +196,7 @@ export default function Breadcrumbs({
           maxWidth: { xs: 102, sm: 'unset' }
         }}
       >
-        {icons && typeof item?.icon === 'string' ? (
-          <RemixIcon icon={item.icon} size={16} sx={iconSX} />
-        ) : icons && item?.icon ? (
-          <RemixIcon icon="ri-node-tree" size={16} sx={iconSX} />
-        ) : null}
+        {icons && <ItemIcon style={{ ...iconSX }} />}
         {itemTitle}
       </Typography>
     );
@@ -209,8 +209,8 @@ export default function Breadcrumbs({
         sx={{ '& .MuiBreadcrumbs-separator': { width: 16, mx: 0.75 } }}
       >
         <Typography component={Link} to="/" variant="h6" sx={{ ...linkSX, color: 'text.secondary' }}>
-          {icons && <RemixIcon icon="ri-home-4-line" size={16} sx={iconSX} />}
-          {icon && !icons && <RemixIcon icon="ri-home-line" size={16} sx={{ ...iconSX, mr: 0 }} />}
+          {icons && <RemixIcon className="ri-home-4-line" fontSize="1rem" style={{ ...iconSX }} />}
+          {icon && !icons && <RemixIcon className="ri-home-4-line" fontSize="1rem" style={{ ...iconSX, marginRight: 0 }} />}
           {(!icon || icons) && 'Dashboard'}
         </Typography>
         {mainContent}
@@ -227,6 +227,8 @@ export default function Breadcrumbs({
           sx={{ '& .MuiBreadcrumbs-separator': { width: 16, ml: 1.25, mr: 1.25 } }}
         >
           {links?.map((link, index) => {
+            CollapseIcon = link.icon ? link.icon : BreadcrumbTreeIcon;
+
             return (
               <Typography
                 key={index}
@@ -234,11 +236,7 @@ export default function Breadcrumbs({
                 variant="h6"
                 sx={{ ...linkSX, color: 'text.secondary' }}
               >
-                {link.icon && typeof link.icon === 'string' ? (
-                  <RemixIcon icon={link.icon} size={16} sx={iconSX} />
-                ) : link.icon ? (
-                  <RemixIcon icon="ri-node-tree" size={16} sx={iconSX} />
-                ) : null}
+                {link.icon && <CollapseIcon style={iconSX} />}
                 {link.title}
               </Typography>
             );
@@ -296,6 +294,7 @@ Breadcrumbs.propTypes = {
   maxItems: PropTypes.number,
   rightAlign: PropTypes.bool,
   separator: PropTypes.any,
+  IconChevronRight: PropTypes.any,
   title: PropTypes.bool,
   titleBottom: PropTypes.bool,
   sx: PropTypes.any,
