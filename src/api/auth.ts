@@ -13,6 +13,7 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   access_token: string;
+  token_type: string;
   username: string;
 }
 
@@ -22,11 +23,16 @@ export interface ChangePasswordRequest {
 }
 
 export async function login(data: LoginRequest) {
-  const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/login', data);
+  const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/v1/auth/token', data);
+  return response.data;
+}
+
+export async function getMe() {
+  const response = await apiClient.get<ApiResponse<{ username: string; role: string }>>('/api/v1/auth/me');
   return response.data;
 }
 
 export async function changePassword(data: ChangePasswordRequest) {
-  const response = await apiClient.post<ApiResponse<void>>('/api/auth/change-password', data);
+  const response = await apiClient.put<ApiResponse<void>>('/api/v1/auth/password', data);
   return response.data;
 }

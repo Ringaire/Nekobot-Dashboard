@@ -5,25 +5,19 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const _pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
+const APP_VERSION: string = _pkg.version;
+
 // 插件：构建时从 package.json 生成 version 文件
 function generateVersionFile() {
   return {
     name: 'generate-version-file',
     writeBundle() {
-      const __dirname = fileURLToPath(new URL('.', import.meta.url));
-      const packageJsonPath = resolve(__dirname, 'package.json');
       const outDir = resolve(__dirname, 'dist');
-
-      // 读取 package.json
-      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-      const version = packageJson.version;
-
-      // 确保 dist 目录存在
       mkdirSync(outDir, { recursive: true });
-
-      // 写入 version 文件
-      writeFileSync(resolve(outDir, 'version'), version, 'utf-8');
-      console.log(`\x1b[32m✓\x1b[0m Generated version file: ${version}`);
+      writeFileSync(resolve(outDir, 'version'), APP_VERSION, 'utf-8');
+      console.log(`\x1b[32m✓\x1b[0m Generated version file: ${APP_VERSION}`);
     }
   };
 }
@@ -42,7 +36,8 @@ export default defineConfig({
     host: true
   },
   define: {
-    global: 'window'
+    global: 'window',
+    'import.meta.env.VITE_APP_VERSION': JSON.stringify(APP_VERSION),
   },
   resolve: {
     alias: {

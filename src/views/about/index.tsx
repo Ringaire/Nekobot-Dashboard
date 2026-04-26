@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -7,27 +7,9 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import MainCard from 'ui-component/cards/MainCard';
+import apiClient from 'api/client';
 
-const infoCards = [
-  {
-    icon: 'ri-information-line',
-    color: 'primary.main',
-    title: '关于项目',
-    description: 'NekoBot 是一个功能强大的聊天机器人管理系统，支持多平台接入、插件扩展、知识库管理等功能。'
-  },
-  {
-    icon: 'ri-shield-check-line',
-    color: 'success.main',
-    title: '版本信息',
-    description: `当前版本: ${import.meta.env.VITE_APP_VERSION || '1.0.0'}`
-  },
-  {
-    icon: 'ri-team-line',
-    color: 'secondary.main',
-    title: '开发团队',
-    description: 'OfficialNekoTeam'
-  }
-];
+const BUILD_VERSION: string = import.meta.env.VITE_APP_VERSION || '0.1.0';
 
 const features = [
   { icon: 'ri-chat-3-line', title: '多平台聊天管理' },
@@ -50,6 +32,37 @@ const techStack = [
 ];
 
 function AboutPage() {
+  const [backendVersion, setBackendVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiClient.get<{ version?: string }>('/api/v1/ping')
+      .then((res) => { if (res.data.version) setBackendVersion(res.data.version); })
+      .catch(() => {});
+  }, []);
+
+  const version = backendVersion ?? BUILD_VERSION;
+
+  const infoCards = [
+    {
+      icon: 'ri-information-line',
+      color: 'primary.main',
+      title: '关于项目',
+      description: 'NekoBot 是一个功能强大的聊天机器人管理系统，支持多平台接入、插件扩展、知识库管理等功能。'
+    },
+    {
+      icon: 'ri-shield-check-line',
+      color: 'success.main',
+      title: '版本信息',
+      description: `当前版本: v${version}`
+    },
+    {
+      icon: 'ri-team-line',
+      color: 'secondary.main',
+      title: '开发团队',
+      description: 'OfficialNekoTeam'
+    }
+  ];
+
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', width: 1 }}>
       <Stack spacing={3}>

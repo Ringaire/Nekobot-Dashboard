@@ -1,31 +1,30 @@
 import { lazy } from 'react';
 
-// project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 
-// dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const AboutPage = Loadable(lazy(() => import('views/about')));
-
-// ==============================|| MAIN ROUTING ||============================== //
+const ProvidersPage = Loadable(lazy(() => import('views/providers')));
+const PluginsPage = Loadable(lazy(() => import('views/plugins')));
+const MCPPage = Loadable(lazy(() => import('views/mcp')));
+const SystemPage = Loadable(lazy(() => import('views/system')));
+const KnowledgePage = Loadable(lazy(() => import('views/knowledge')));
+const PersonasPage = Loadable(lazy(() => import('views/personas')));
 
 const MainRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
-    {
-      path: '/',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'dashboard',
-      element: <DashboardDefault />
-    },
-    {
-      path: 'about',
-      element: <AboutPage />
-    }
+    { path: '/', element: <DashboardDefault /> },
+    { path: 'dashboard', element: <DashboardDefault /> },
+    { path: 'providers', element: <ProvidersPage /> },
+    { path: 'plugins', element: <PluginsPage /> },
+    { path: 'mcp', element: <MCPPage /> },
+    { path: 'system', element: <SystemPage /> },
+    { path: 'knowledge', element: <KnowledgePage /> },
+    { path: 'personas', element: <PersonasPage /> },
+    { path: 'about', element: <AboutPage /> }
   ]
 };
 
