@@ -13,7 +13,7 @@ const BUILD_VERSION: string = import.meta.env.VITE_APP_VERSION || '0.1.0';
 
 const features = [
   { icon: 'ri-chat-3-line', title: '多平台聊天管理' },
-  { icon: 'ri-plugin-line', title: '插件系统' },
+  { icon: 'ri-plug-line', title: '插件系统' },
   { icon: 'ri-book-2-line', title: '知识库管理' },
   { icon: 'ri-brain-line', title: 'LLM 接入' },
   { icon: 'ri-terminal-box-line', title: '命令管理' },

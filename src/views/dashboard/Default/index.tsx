@@ -61,7 +61,7 @@ export default function Dashboard() {
             title="已加载插件"
             value={info ? String(info.plugins_loaded) : undefined}
             subtitle="当前已加载的插件数量"
-            icon="ri-plugin-line"
+            icon="ri-plug-line"
             isLoading={isLoading}
           />
         </Grid>

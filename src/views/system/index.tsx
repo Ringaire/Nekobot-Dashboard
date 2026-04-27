@@ -147,7 +147,7 @@ export default function SystemPage() {
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatTile
-              icon="ri-plugin-line"
+              icon="ri-plug-line"
               label="插件 / 提供商"
               value={info ? `${info.plugins_loaded} / ${info.providers_loaded}` : '-'}
               loading={infoLoading}
