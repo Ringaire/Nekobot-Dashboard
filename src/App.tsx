@@ -1,28 +1,20 @@
 import { RouterProvider } from 'react-router-dom';
+import { ThemeProvider } from 'next-themes';
 
-// routing
-import router from './routes';
-
-// project imports
-import NavigationScroll from './layout/NavigationScroll';
-import { AuthProvider } from './contexts/AuthContext';
-
-import ThemeCustomization from './themes';
-
-// auth provider
-
-// ==============================|| APP ||============================== //
+import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { AuthProvider } from '@/contexts/auth';
+import { router } from './routes';
 
 export default function App() {
   return (
-    <ThemeCustomization>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <AuthProvider>
-        <NavigationScroll>
-          <>
-            <RouterProvider router={router} />
-          </>
-        </NavigationScroll>
+        <TooltipProvider delayDuration={200}>
+          <RouterProvider router={router} />
+          <Toaster richColors position="top-right" />
+        </TooltipProvider>
       </AuthProvider>
-    </ThemeCustomization>
+    </ThemeProvider>
   );
 }

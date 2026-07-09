@@ -1,6 +1,6 @@
 import apiClient from './client';
 import type { ApiResponse } from './auth';
-import type { ConfigSchema } from 'ui-component/config/types';
+import type { ConfigSchema } from '@/types/config';
 
 export interface ProviderSchemasMap {
   [providerType: string]: ConfigSchema;

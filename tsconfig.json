@@ -1,38 +1,9 @@
 {
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true,
-    "ignoreDeprecations": "6.0",
-    "baseUrl": "src",
     "paths": {
-      "assets/*": ["./assets/*"],
-      "contexts/*": ["./contexts/*"],
-      "hooks/*": ["./hooks/*"],
-      "layout/*": ["./layout/*"],
-      "menu-items/*": ["./menu-items/*"],
-      "routes/*": ["./routes/*"],
-      "store/*": ["./store/*"],
-      "themes/*": ["./themes/*"],
-      "ui-component/*": ["./ui-component/*"],
-      "utils/*": ["./utils/*"],
-      "views/*": ["./views/*"]
+      "@/*": ["./src/*"]
     }
-  },
-  "include": ["src/**/*"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "allowJs": true,
-  "checkJs": false
+  }
 }
